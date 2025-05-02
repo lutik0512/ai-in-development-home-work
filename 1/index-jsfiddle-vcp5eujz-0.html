@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Calculate and display total and average expenses</title>
+
+  <style>
+    body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f4f4f4;
+}
+
+.container {
+  text-align: center;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 80%;
+  max-width: 600px;
+}
+
+h1 {
+  font-size: 2em;
+}
+
+table {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+td, th {
+  padding: 10px;
+  text-align: left;
+}
+
+input[type="text"], input[type="number"] {
+  padding: 5px;
+  width: 80%;
+}
+
+button {
+  padding: 10px 20px;
+  margin: 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 1em;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+#results {
+  margin-top: 20px;
+}
+
+#topExpenses {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+  </style>
+
+  
+</head>
+<body>
+  <div class="container">
+  <h1>Expense Calculator</h1>
+  
+  <table id="expenseTable">
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>Amount ($)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><input type="text" class="category" placeholder="Category"></td>
+        <td><input type="number" class="amount" placeholder="Amount"></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <button onclick="addExpense()">Add Expense</button>
+  <button onclick="calculate()">Calculate</button>
+  
+  <div id="results">
+    <p><strong>Total Expenses:</strong> $<span id="total"></span></p>
+    <p><strong>Average Daily Expense:</strong> $<span id="average"></span></p>
+    <p><strong>Top 3 Largest Expenses:</strong></p>
+    <ul id="topExpenses"></ul>
+  </div>
+</div>
+
+
+  <script>
+    let expenses = [];
+
+function addExpense() {
+  const category = document.querySelector('.category').value;
+  const amount = parseFloat(document.querySelector('.amount').value);
+
+  if (category && !isNaN(amount)) {
+    expenses.push({ category, amount });
+    document.querySelector('.category').value = '';
+    document.querySelector('.amount').value = '';
+    
+    const tableBody = document.querySelector('#expenseTable tbody');
+    const newRow = document.createElement('tr');
+    newRow.innerHTML = `<td>${category}</td><td>${amount}</td>`;
+    tableBody.appendChild(newRow);
+  } else {
+    alert('Please enter valid category and amount.');
+  }
+}
+
+function calculate() {
+  if (expenses.length === 0) {
+    alert('Please add some expenses first.');
+    return;
+  }
+
+  // Total expenses
+  const total = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+
+  // Average daily expense
+  const daysInMonth = 30;  // Assuming 30 days in the month
+  const average = total / daysInMonth;
+
+  // Top 3 largest expenses
+  const topExpenses = expenses
+    .sort((a, b) => b.amount - a.amount)
+    .slice(0, 3);
+
+  // Display results
+  document.getElementById('total').textContent = total.toFixed(2);
+  document.getElementById('average').textContent = average.toFixed(2);
+
+  const topExpensesList = document.getElementById('topExpenses');
+  topExpensesList.innerHTML = '';
+  topExpenses.forEach(expense => {
+    const listItem = document.createElement('li');
+    listItem.textContent = `${expense.category}: $${expense.amount}`;
+    topExpensesList.appendChild(listItem);
+  });
+}
+
+  </script>
+</body>
+</html>
